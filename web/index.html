@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>124M · 本地模型实验室</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <a class="brand" href="/"><span class="brand-icon">m</span><span>小模型实验室<small>YOUR MODEL, YOUR MACHINE</small></span></a>
+    <div class="side-label">工作空间</div>
+    <button id="chatMode" class="nav-item" type="button"><span>↗</span> 对话测试</button>
+    <button id="completionMode" class="nav-item active" type="button"><span>≋</span> 文本续写 <span class="nav-dot"></span></button>
+    <button id="clear" class="nav-item secondary" type="button"><span>＋</span> 清空 / 新建</button>
+    <div class="model-card">
+      <div class="model-card-heading"><span class="tiny-dot"></span> 你的第一个语言模型</div>
+      <strong>GPT-2 small<span>124M</span></strong>
+      <p id="modelDescription">从随机权重开始，用 FineWeb-Edu 训练。</p>
+      <dl><div><dt>预训练量</dt><dd id="trainedTokens">—</dd></div><div><dt id="lossLabel">验证 Loss</dt><dd id="valLoss">—</dd></div><div><dt>上下文窗口</dt><dd>512 tokens</dd></div></dl>
+      <a id="lossLink" class="text-link" href="/api/loss" target="_blank" rel="noopener" hidden>查看 Loss 曲线 ↗</a>
+    </div>
+    <div class="side-footer"><span class="tiny-dot" id="connectionDot"></span><span id="connection">正在连接本地模型</span><small>推理在你的电脑上运行</small></div>
+  </aside>
+
+  <main>
+    <header class="topbar"><div><strong id="pageTitle">文本续写</strong><span class="pill">BASE MODEL</span></div><span id="deviceBadge" class="device-badge">连接中…</span></header>
+    <div class="notice"><span>i</span><p id="modelNotice">这是英文基础模型，尚未经过对话训练。可以尝试对话；测试语言能力时，建议使用「文本续写」。</p></div>
+    <section id="conversation" class="conversation" aria-label="对话内容" aria-live="polite">
+      <div id="welcome" class="welcome">
+        <div class="eyebrow">100M TOKENS. A FIRST CONVERSATION.</div>
+        <h1>和你训练的模型，<br>说第一句话。</h1>
+        <p id="welcomeDescription">用熟悉的英文开头，观察模型的词语选择、知识表达和篇章连贯性。</p>
+        <div class="suggestions" id="suggestions"></div>
+        <div class="welcome-note"><span>↳</span> 回复可能重复、跑题或包含事实错误，这也是观察训练效果的一部分。</div>
+      </div>
+      <div id="messages" class="messages"></div>
+    </section>
+    <div class="composer-wrap">
+      <div id="error" class="error" role="alert" hidden></div>
+      <form id="form" class="composer">
+        <label class="sr-only" for="input">输入消息</label>
+        <textarea id="input" rows="2" maxlength="6000" placeholder="输入一段英文，让模型接着写…" required></textarea>
+        <div class="composer-bottom"><span id="inputHint">Enter 发送 · Shift + Enter 换行</span><button id="send" class="send" type="submit" disabled>发送 <span>↑</span></button><button id="stop" class="stop" type="button" hidden>■ 停止生成</button></div>
+      </form>
+      <div class="bottom-note">仅使用你的本地 checkpoint · 没有调用其他大模型</div>
+    </div>
+  </main>
+
+  <aside class="settings">
+    <div class="settings-heading"><span>生成设置</span><button id="reset" type="button">重置</button></div>
+    <p class="settings-caption">每次调整，探索不同的表达。</p>
+    <label class="control" for="temperature"><span>温度 <output id="temperatureValue">0.80</output></span><input id="temperature" type="range" min="0.1" max="1.5" step="0.05" value="0.8"><small>越低越稳定，越高越随机</small></label>
+    <label class="control" for="length"><span>生成长度上限 <output id="lengthValue">512</output></span><input id="length" type="range" min="32" max="2048" step="32" value="512"><small>最多生成 2048 tokens；模型也可能提前结束</small></label>
+    <label class="control" for="topK"><span>Top-K <output id="topKValue">50</output></span><input id="topK" type="range" min="1" max="200" step="1" value="50"><small>从最可能的 K 个 token 中采样</small></label>
+    <label class="control" for="penalty"><span>重复惩罚 <output id="penaltyValue">1.10</output></span><input id="penalty" type="range" min="1" max="1.5" step="0.05" value="1.1"><small>略微提高可减少重复</small></label>
+    <label class="seed-control" for="seed"><span>随机种子</span><input id="seed" type="number" min="0" max="4294967295" value="42"></label>
+    <div class="session-card"><span class="side-label">最近一次生成</span><div><strong id="speed">—</strong><span>tokens / 秒</span></div><p id="generationMeta">发送消息后查看推理速度</p></div>
+    <div class="settings-note">生成长度与上下文长度不同：即使输出 2048 tokens，每一步仍只参考最近 512 tokens。更长的输出可能重复或跑题。</div>
+  </aside>
+</div>
+</body>
+</html>

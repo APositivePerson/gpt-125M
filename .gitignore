@@ -1,0 +1,6 @@
+.venv/
+.cache/
+data/
+data_sft/
+runs/
+__pycache__/
